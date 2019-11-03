@@ -29,6 +29,14 @@ namespace JIT {
             const char* what() const noexcept override;
         };
 
+        class unknown_symbol : public std::exception {
+        public:
+            unknown_symbol(char symb);
+            const char* what() const noexcept override;
+        private:
+            char err_msg[19] = "Unknown symbol ' '";
+        };
+
         struct Variable {
             std::string name;
         };

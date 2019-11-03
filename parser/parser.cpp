@@ -21,6 +21,14 @@ namespace JIT {
             return "Missing ')'";
         }
 
+        unknown_symbol::unknown_symbol(char symb) {
+            err_msg[16] = symb;
+        }
+
+        const char* unknown_symbol::what() const noexcept {
+            return err_msg;
+        }
+
         std::vector<Token> SplitToTokens(const std::string& input) {
             uint32_t pos = 0;
             std::vector<Token> result;
@@ -54,22 +62,27 @@ namespace JIT {
                         // Count number of arguments
                         uint32_t scan_pos = pos + 1, depth = 1;
                         uint32_t num_arguments = 0;
+                        uint32_t additional_content = 0; 
                         while (depth > 0 && scan_pos < input.size()) {
                             if (input[scan_pos] == '(') {
                                 ++depth;
                             } else if (input[scan_pos] == ')') {
                                 --depth;
-                            } else if (input[scan_pos] == ',' && depth == 1) {
-                                ++num_arguments;
+                            } else {
+                                if (input[scan_pos] == ',' && depth == 1) {
+                                    ++num_arguments;
+                                }
+                                ++additional_content;
                             }
                             ++scan_pos;
                         }
                         if (depth > 0) {
                             throw missing_close_bracket();
                         }
-                        if (scan_pos - pos > 2) {
+                        if (additional_content > 0) {
                             ++num_arguments;
                         }
+
                         Token tok;
                         tok.type = Token::FUNCTION;
                         tok.function.name = name;
@@ -89,6 +102,11 @@ namespace JIT {
                     tok.number = number;
                     result.push_back(tok); 
                 } else {
+                    if (input[pos] != '+' && input[pos] != '-' && input[pos] != '*' &&
+                        input[pos] != '(' && input[pos] != ')' && input[pos] != ',') {
+                        throw unknown_symbol(input[pos]);
+                    }
+
                     Token tok;
                     tok.type = Token::OPERATION;
                     tok.operation = static_cast<Operation>(input[pos]);

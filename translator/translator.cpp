@@ -76,8 +76,13 @@ namespace JIT {
 
         void CallFunction(std::vector<uint32_t>& command_list, void* func_pointer,
                           uint32_t num_arguments) {
+            // Set arguments
             for (uint32_t i = num_arguments; i > 0; --i) {
                 command_list.push_back(command_code::POP[i - 1]);
+            }
+            // Set other arguments to zero - to call sum(a, b)
+            for (uint32_t i = num_arguments; i < 4; ++i) {
+                SetConstant(command_list, i, 0);
             }
             CallFunction(command_list, func_pointer);
             // Save result
@@ -135,7 +140,7 @@ namespace JIT {
                     }
                 }
             }
-            //command_list.push_back(command_code::POP[0]);
+            // Last command should be push {r0}, so just remove it
             command_list.pop_back();
             command_list.push_back(command_code::POP_R4_LR);
             command_list.push_back(command_code::BX_LR);
