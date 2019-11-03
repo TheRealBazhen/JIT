@@ -183,8 +183,6 @@ call_function_and_print_result(void * addr)
     printf("%d\n", result);
 }
 
-int f(void);
-
 void
 main()
 {
