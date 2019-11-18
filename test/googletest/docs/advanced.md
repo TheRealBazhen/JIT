@@ -465,7 +465,7 @@ You can call the function
 to assert that types `T1` and `T2` are the same. The function does nothing if
 the assertion is satisfied. If the types are different, the function call will
 fail to compile, the compiler error message will say that
-`type1 and type2 are not the same type` and most likely (depending on the compiler)
+`T1 and T2 are not the same type` and most likely (depending on the compiler)
 show you the actual values of `T1` and `T2`. This is mainly useful inside
 template code.
 
@@ -918,6 +918,8 @@ the `SCOPED_TRACE` macro or the `ScopedTrace` utility:
 
 ```c++
 SCOPED_TRACE(message);
+```
+```c++
 ScopedTrace trace("file_path", line_number, message);
 ```
 
@@ -1803,7 +1805,7 @@ For technical reasons, there are some caveats:
 ## Registering tests programmatically
 
 The `TEST` macros handle the vast majority of all use cases, but there are few
-were runtime registration logic is required. For those cases, the framework
+where runtime registration logic is required. For those cases, the framework
 provides the `::testing::RegisterTest` that allows callers to register arbitrary
 tests dynamically.
 
